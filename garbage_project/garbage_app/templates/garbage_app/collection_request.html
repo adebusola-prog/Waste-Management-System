@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>Customer's Collection Requests</title>
+   <!-- Add your CSS stylesheets and scripts here -->
+   <style>
+      .accept-button {
+         background-color: greenyellow;
+         color: white;
+         padding: 5px 10px;
+         border: none;
+         cursor: pointer;
+
+      
+      }
+      .reject-button {
+         background-color: red;
+         color: white;
+         padding: 5px 10px;
+         border: none;
+         cursor: pointer;
+
+      
+      }
+   </style>
+</head>
+<body>
+   {% include 'accounts/header.html' %}
+
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-6">
+            <br>
+            <div class="card card-body">
+            <br>
+            <h2>Collection Requests</h2>
+            <br>
+            <table class="table table-bordered">
+               <thead>
+                  <tr>
+                     <th>Customer's Username</th>
+                     <th>Status</th>
+                     <th>Plan Status</th>
+                     <th>Plan Price</th>
+                     <th>Address</th>
+                     <th>Approval</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {% for request in all_request %}
+                  <tr>
+                     <td>{{ request.customer.username }}</td>
+                     <td>{{ request.status }}</td>
+                     <td>{{ request.plan.status }}</td>
+                     <td>{{ request.plan.price }}</td>
+                     <td>{{ request.address }}</td>
+                     <td>
+                        <form action="{% url 'garbage:request_accepted' user.id %}" method="POST"> 
+                           {% csrf_token %} 
+                           <input type="submit" value="ACCEPT" class="accept-button">
+                        </form>
+                        <form action="{% url 'garbage:request_rejected' user.id %}" method="POST">
+                           {% csrf_token %}
+                           <input type="text" name="rejection_reason" placeholder="Enter your reasons for rejecting request" required>
+                           <input type="submit" value="REJECT" class="reject-button">
+                       </form>
+                     </td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+         <div class="col-sm-6">
+            <br>
+            <div class="card card-body">
+            <!-- Add any additional content or code here -->
+         </div>
+         </div>
+      </div>
+   </div>
+</body>
+</html>

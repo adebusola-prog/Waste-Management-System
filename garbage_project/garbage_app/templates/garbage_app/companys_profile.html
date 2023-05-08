@@ -1,0 +1,191 @@
+{% load static %}
+<style>
+   .plan-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .plan-table th,
+   .plan-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .plan-table th {
+      background-color: #f2f2f2;
+   }
+
+   .profile-table,
+   .location-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .profile-table th,
+   .profile-table td,
+   .location-table th,
+   .location-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .profile-table th {
+      background-color: #f2f2f2;
+   }
+   .profile-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+   }
+
+   .profile-label {
+      display: inline-block;
+      width: 150px;
+      font-weight: bold;
+   }
+
+   .profile-value {
+      display: inline-block;
+      margin-left: 10px;
+   }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>GO CLEAN</title>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link href="{% static '/css/main.css' %}" rel="stylesheet" type="text/css">
+   <link rel= 'stylesheet' href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+   integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+   <link rel = "stylesheet" type="text/css" href="main.css">
+   <nav class="navbar navbar-expand-sm navbar-success bg-success">
+      <div class="container-fluid mt-3">
+        <a class="navbar-brand" href="javascript:void(0)">MY_PAGE</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mynavbar">
+          <ul class="navbar-nav me-auto">
+              <a class="nav-link" href="{% url 'accounts:sign_up' %}">Log in</a>
+
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:log_out' %}">Log out</a>
+            </li>
+         
+            <li class="nav-item">
+              
+               <a class="nav-link" href="{% url 'garbage:home_page' %}">HOME</a>
+            </li>
+           
+               
+          </ul>
+          
+        </div>
+      </div>
+    </nav>
+
+
+<br>
+
+   
+      <div class="container">
+         <div class="row">
+            <div class="col-sm-3 bg-success ">
+               {% if request.user %}
+                  <h3>Welcome: {{request.user.company_name}}</h3>
+               {% endif %}
+               <a href="#" class="text-dark"><h4>COMPANY PAGE</h4></a>
+               <hr>
+                  <form class="d-flex" method="GET", action="">
+                     <input class="form-control me-2" type="text" name="q", placeholder="Search">
+                     <button class="btn btn-dark" type="submit">Search</button>
+                  </form>
+               <!-- <hr>
+               <a href="#" class="text-dark"><h4>COLLECTORS IN MY LOCATION</h4></a>
+               <hr> -->
+               <a href="{% url 'accounts:update_details' request.user.id %}" class="text-dark"><h6>UPDATE PROFILE</h6></a>
+               <hr>
+               <a href="{% url 'garbage:plan_form' %}" class="text-dark"><h6>CREATE PLAN</h6></a>
+               <hr>
+               <a href="#" class="text-dark"><h6>REGISTER COMPLAINT</h6></a>
+               <hr>
+               <a href="#" class="text-dark"><h6>TRANSACTION HISTORY</h6></a>
+               <hr>
+               <a href="{% url 'garbage:customer_request' request.user.id %}" class="text-dark"><h6>CUSTOMER'S REQUEST</h6></a>
+               <hr>
+               <a href="#" class="text-dark"><h6>ACCEPTED REQUEST</h6></a>
+               <hr>
+            </div>   
+{% block content %} 
+            <div class="col-sm-4">
+              
+            <div class="card card-body">
+               <ul class="profile-list">
+                  <li>
+                     <h2>MY PROFILE</h2>
+                  </li>
+                  <li>
+                     <span class="profile-label">Company's Name:</span>
+                     <span class="profile-value">{{ user.company_name }}</span>
+                  </li>
+                  <li>
+                     <span class="profile-label">Email:</span>
+                     <span class="profile-value">{{ user.email }}</span>
+                  </li>
+                  <li>
+                     <span class="profile-label">Username:</span>
+                     <span class="profile-value">{{ user.username }}</span>
+                  </li>
+                  <li>
+                     <span class="profile-label">Email:</span>
+                     <span class="profile-value">{{ user.email }}</span>
+                  </li>
+                  <li>
+                      <h6>Our Locations:</h6>{% for location in user.garbage_collector_location.all %}
+                      <hr>
+                     <li>{{ location.name }}</li>
+                     {% endfor %}
+                  </li>
+               </ul>
+            </div>
+            </div>
+            <div class="col-sm-5">
+               <div class="card card-body">
+                  <h4>COLLECTION PLAN</h4>
+                  <table class="plan-table">
+                     <thead>
+                        <tr>
+                           <th>Plan</th>
+                           <th>Price</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for plan in plans %}
+                        <tr>
+                           <td>{{ plan.status }}</td>
+                           <td>{{ plan.price }}</td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+                  <br>  
+               </div>
+            </div>
+         </div>
+         
+      </div>
+   </div>
+{% endblock %}
+         
+   
+
+
+      
+      

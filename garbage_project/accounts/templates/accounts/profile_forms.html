@@ -1,0 +1,201 @@
+{% extends "accounts/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}<title>{{page | title}} page</title>{% endblock %}
+{% block content %}
+<style>
+    .profile_forms{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:9px;
+        margin:50px 400px;
+        background-color:whitesmoke;
+    }
+
+
+   .form_header h2{
+      margin-top: 50px;
+      margin-bottom:  -10px;
+      margin-left:30px;
+      /* background-color:;
+      font-type:helvetica; */
+   }
+
+    .form_header img{
+        width:20px;
+        height:20px;
+        margin-left: -180px;
+        margin-top : -90px;
+     }
+
+     .form_body{
+        margin-top:20px;
+     }
+
+     .form_body button{
+        cursor:pointer;
+     }
+
+      .password_form_header h2{
+        margin-top: 30px;
+        margin-bottom:  -20px;
+        margin-left:50px;
+        /* background-color:;
+        font-type:helvetica; */
+    }
+
+    .password_form_header img{
+        width:20px;
+        height:20px;
+        margin-left: -80px;
+        margin-top : -200px;
+     }
+
+     .password_form_body{
+        margin-top:30px;
+        margin-bottom:10px;
+     }
+
+     .password_form_body button{
+        cursor:pointer;
+        margin-right:-20px
+     }
+
+     .close_account{
+        margin:50px 50px;
+     }
+
+      .close_aza_form_header h2{
+        margin-top: 30px;
+        margin-bottom:  -20px;
+        margin-left:150px;
+        /* background-color:;
+        font-type:helvetica; */
+    }
+
+    .close_aza_form_header img{
+        width:20px;
+        height:20px;
+        margin-left: 10px;
+        margin-top : -200px;
+     }
+
+     .close_aza_form_body{
+        margin-top:30px;
+        margin-bottom:10px;
+        margin-left:20px;
+        margin-right:20px;
+
+     }
+
+     .individual_review{
+           margin:30px 0px;
+     }
+
+     .review_form_header h2{
+        margin-top: 30px;
+        margin-bottom:  -20px;
+        margin-left:50px;
+        /* background-color;
+        font-type:helvetica; */
+    }
+
+    .review_form_header img{
+        width:20px;
+        height:20px;
+        margin-left: -130px;
+        margin-top : -200px;
+     }
+
+</style>
+{% include "accounts/header.html" %}
+<div class="profile_forms">
+    {% if page == "user_update_details" %}
+        <div>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form_header">
+                    <h2>Company's Profile Update Form</h2>
+
+                    <a href="{{request.META.HTTP_REFERER}}">
+                        <img src="{% static 'images/arrow-left.svg' %}" alt="Go Back">
+                    </a>
+                </div>
+                <div class="uniForm"></div>
+                  <label>Company Name</label>
+                    {{form.company_name}}
+                    <br>
+                    <br>
+
+                    <label>Username</label>
+                    {{form.username}}
+                    <br>
+                    <br>
+
+                     <label>Email</label>
+                    {{form.email}}
+                    <br>
+                    <br>
+
+                    <label>Location</label>                     
+                    {{form.garbage_collector_location}}
+                    <br>
+                    <br>
+
+                    <label>Company's Logo</label>
+                    {{form.profile_picture }}
+                    <br>
+                    <br>
+
+                    <label>Phone Number</label>
+                    {{form.phone_number }}
+                    <br>
+                    <br>
+
+                    <button type="submit">UPDATE</button>
+                    <br>
+                    <br>
+                </div>
+
+            </form>
+        </div>
+    {% endif %}
+
+    {% if page == "change_password" %}
+        <div class="change_password">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="password_form_header">
+                    <h2>Password Change Form</h2>
+
+                    <a href="{{request.META.HTTP_REFERER}}">
+                        <img src="{% static 'images/arrow-left.svg' %}" alt="Go Back">
+                    </a>
+                </div>
+
+               <div class="password_form_body">
+                  <label>Old Password:</label>
+                    {{form.old_password}}
+                    <br>
+                    <br>
+
+                    <label>New Password:</label>
+                    {{form.new_password1}}
+                    <br>
+                    <br>
+
+                    <label>New Password Confirm</label>
+                    {{form.new_password2}}
+                    <br>
+                    <br>
+
+                    <button type="submit">Change Password</button>
+               </div>
+            </form>
+        </div>
+    {% endif %}
+
+{% endblock %}

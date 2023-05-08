@@ -1,0 +1,50 @@
+{% include 'accounts/header.html' %}
+
+<div class="container">
+   <div class="row">
+      <div class="col-sm-8">
+         <br>
+         <br>
+         <h2>MY SUBSCRIPTIONS</h2>
+         <br>
+         <table class="table table-bordered">
+            <thead>
+               <tr>
+                  <th>Customer's Username</th>
+                  <th>Garbage collector</th>
+                  <!-- <th>My User</th> -->
+                  <th>Collection Plan</th>
+                  <th>Price</th>
+                  <th>Location</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th>subscription date</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for sub in all_customer_request %}
+               <tr>
+                  <td>{{ sub.customer.username }}</td>
+                  <td>{{ sub.garbage_collector }}</td>
+                  <td>{{ sub.plan.status }}</td>
+                  <td>{{ sub.plan.price }}</td>
+                  <td>{{ sub.location }}</td>
+                  <td>{{ sub.address }}</td>
+                  <td>{{ sub.status }}</td>
+                  <td>{{ sub.created_at }}</td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+      <!-- <div class="col-sm-6">
+         <br>
+         <div class="card card-body"> -->
+         <!-- Add any additional content or code here -->
+      </div>
+      </div>
+   </div>
+</div>
+</body>
+</html>
