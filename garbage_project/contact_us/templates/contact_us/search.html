@@ -1,0 +1,124 @@
+
+
+{% include "accounts/header.html" %}
+{% load static %}
+<style>
+
+table {
+      border-collapse: collapse;
+   }
+   th, td {
+      border: 2px solid black;
+      padding: 8px;
+   }
+   .plan-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .plan-table th,
+   .plan-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .plan-table th {
+      background-color: #f2f2f2;
+   }
+
+   .profile-table,
+   .location-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .profile-table th,
+   .profile-table td,
+   .location-table th,
+   .location-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .profile-table th {
+      background-color: #f2f2f2;
+   }
+</style>
+    {% block title %}<title>{{page}} page</title>{% endblock %}
+{% block content %}
+       <div class="container">
+          <div class="row">
+             <div class="col-sm-6">
+                <div class="card card-body">
+                   <img src="{% static 'images/locategarbage.png.webp' %}" alt="ada" class="d-block" style="width:100%">
+                </div>
+             </div>
+             <div class="col-sm-6">
+                <div class="card card-body">
+                   <h4>{{ company.user.company_name }} DETAILS</h4>
+                   <li>
+                      <table class="profile-table">
+                         <thead>
+                            <tr>
+                               <th>Company Name</th>
+                               <th>Company's Username</th>
+                               <th>Email</th>
+                               <th>Phone Number</th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                              {% for collector in garbagecollectors %}
+                                 <td>{{ collector.user.company_name }}</td>
+                                 <td>{{ collector.user.username }}</td>
+                                 <td>{{ collector.user.email }}</td>
+                                 <td>{{ collector.user.phone_number }}</td>
+                              
+                            </tr>
+                         </tbody>
+                      </table>
+                   </li>
+                   <li>
+                      <table class="location-table">
+                         <thead>
+                            <tr>
+                               <th>Locations they operate</th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            {% for location in collector.user.garbage_collector_location %}
+                               <tr>
+                                  <td>{{ location.name }}</td>
+                               </tr>
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                     </table>
+                  </li>
+                  <li>
+                   
+                       
+                      <table style="border: 2px solid black;">
+                        <thead>
+                          <tr>
+                            <th style="border: 2px solid black;">Company Name</th>
+                            <th style="border: 2px solid black;">Username</th>
+                            <th style="border: 2px solid black;">Email</th>
+                            <th style="border: 2px solid black;">Phone Number</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for custom_user in custom_users %}
+                              <tr>
+                                 <td style="border: 2px solid black;">{{ custom_user.company_name }}</td>
+                                 <td style="border: 2px solid black;">{{ custom_user.username }}</td>
+                                 <td style="border: 2px solid black;">{{ custom_user.email }}</td>
+                                 <td style="border: 2px solid black;">{{custom_user.phone_number}}</td>
+                              </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>                         
+  
+{% endblock %}

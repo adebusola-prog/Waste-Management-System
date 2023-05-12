@@ -6,12 +6,10 @@ class ActiveManager(models.Manager):
    def get_queryset(self):
       return super().get_queryset().filter(is_active=True)
    
-
 class InactiveManager(models.Manager):
    
     def get_queryset(self):
         return super().get_queryset().filter(is_active=False)
-
     
 class Location(models.Model):
    name = models.CharField(max_length=100)
@@ -27,11 +25,14 @@ class CollectionPlan(models.Model):
       FORTNIGHTLY= 'FORTNIGHTLY', 'Fortnightly'
       MONTHLY= "MONTHLY", 'Monthly'
 
-   garbage_collector = models.ForeignKey('accounts.GarbageCollector', on_delete=models.CASCADE)
+   garbage_collector = models.ForeignKey('accounts.GarbageCollector', related_name="my_plans", on_delete=models.CASCADE)
    status = models.CharField(max_length=40, choices=Status.choices,
                            default=Status.MONTHLY)
    price = models.DecimalField(max_digits=10, decimal_places=2)
+   description = models.TextField(blank=True)
+   weight=models.PositiveIntegerField(blank=True, null=True)
    created_at = models.DateTimeField(auto_now_add=True)
+   updated_at=models.DateTimeField(auto_now=True)
    is_active= models.BooleanField(default=True)
    
    objects = models.Manager()
@@ -41,6 +42,8 @@ class CollectionPlan(models.Model):
    def __str__(self):
       return f"{self.garbage_collector.user.company_name}"
    
+   class Meta:
+      ordering=['-updated_at']
 
 class CollectionRequest(models.Model):
    class Status(models.TextChoices):
@@ -66,6 +69,8 @@ class CollectionRequest(models.Model):
    def __str__(self):
       return f"{self.customer.username} - {self.plan.status} - {self.location.name}"
    
+   class Meta:
+      ordering=['-updated_at']
 
 
 

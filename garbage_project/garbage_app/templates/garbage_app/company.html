@@ -92,6 +92,8 @@
                         <tr>
                            <th>Plan</th>
                            <th>Price</th>
+                           <th>Description</th>
+                           <th>Weight</th>
                         </tr>
                      </thead>
                      <tbody>
@@ -99,6 +101,8 @@
                            <tr>
                               <td>{{ plan.status }}</td>
                               <td>{{ plan.price }}</td>
+                              <td>{{ plan.description }}</td>
+                              <td>{{ plan.weight }}</td>
                               <td>
                                  <form method="POST" action="">
                                     {% csrf_token %}

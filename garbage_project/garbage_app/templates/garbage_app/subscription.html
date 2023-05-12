@@ -14,8 +14,8 @@
                   <th>Garbage collector</th>
                   <!-- <th>My User</th> -->
                   <th>Collection Plan</th>
-                  <th>Price</th>
-                  <th>Location</th>
+                  <th>Price(Naira)</th>
+                  <!-- <th>Location</th> -->
                   <th>Address</th>
                   <th>Status</th>
                   <th>subscription date</th>
@@ -25,10 +25,10 @@
                {% for sub in all_customer_request %}
                <tr>
                   <td>{{ sub.customer.username }}</td>
-                  <td>{{ sub.garbage_collector }}</td>
+                  <td>{{ sub.garbage_collector.user.company_name }}</td>
                   <td>{{ sub.plan.status }}</td>
-                  <td>{{ sub.plan.price }}</td>
-                  <td>{{ sub.location }}</td>
+                  <td>₦{{ sub.plan.price }}</td>
+                  <!-- <td>{{ sub.location }}</td> -->
                   <td>{{ sub.address }}</td>
                   <td>{{ sub.status }}</td>
                   <td>{{ sub.created_at }}</td>
@@ -38,10 +38,6 @@
          </table>
       </div>
    </div>
-      <!-- <div class="col-sm-6">
-         <br>
-         <div class="card card-body"> -->
-         <!-- Add any additional content or code here -->
       </div>
       </div>
    </div>

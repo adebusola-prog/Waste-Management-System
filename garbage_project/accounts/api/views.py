@@ -1,30 +1,130 @@
-from accounts.api.renderers import CustomRenderer
-from accounts.api.serializers import ResetPasswordSerializer ,CompanyRegisterationSerializer, CustomerRegisterationSerializer
-from accounts.models import CustomUser
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from .utils import Utils
-
-# Create your views here.
-
-
-from django.shortcuts import render
-from django.urls import reverse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.http import JsonResponse
-
-from .serializers import LoginSerializer, ChangePasswordSerializer, SetNewPasswordSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import generics, status
-from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from accounts.api.renderers import CustomRenderer
+from accounts.api.serializers import (
+    ChangePasswordSerializer,
+    CompanyRegistrationSerializer,
+    CustomerEditSerializer,
+    CustomerRegistrationSerializer,
+    MyCompanyEditSerializer,
+    ResetPasswordSerializer,
+)
+from accounts.models import CustomUser
+from accounts.api.utils import Utils
+from garbage_app.models import Location
+from .serializers import (
+    LoginSerializer,
+    SetNewPasswordSerializer,
+    LocationSerializer,
+)
+from .utils import Utils
+from django_elasticsearch_dsl_drf.constants import SUGGESTER_COMPLETION
+from django_elasticsearch_dsl_drf.filter_backends import SearchFilterBackend, FilteringFilterBackend, SuggesterFilterBackend
+from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+
+from ..documents import CustomUserDocument, GarbageCollectorDocument, LocationDocument
+from .serializers import CustomUserDocumentSerializer, GarbageCollectorDocumentSerializer, LocationDocumentSerializer
+
+class CustomUserDocumentView(DocumentViewSet):
+    document = CustomUserDocument
+    serializer_class = CustomUserDocumentSerializer
+
+    filter_backends = [
+        FilteringFilterBackend,
+        SearchFilterBackend,
+        SuggesterFilterBackend
+    ]
+
+    search_fields = (
+        'company_name',
+        'username',
+        'email',
+        'garbage_collector_location.name'
+    )
+
+    filter_fields = {
+        # Add any specific filtering fields if needed
+    }
+
+    suggester_fields = {
+        'company_name': {
+            'field': 'company_name.suggest',
+            'suggesters': [
+                SUGGESTER_COMPLETION,
+            ],
+        },
+    }
+
+class GarbageCollectorDocumentView(DocumentViewSet):
+    document = GarbageCollectorDocument
+    serializer_class = GarbageCollectorDocumentSerializer
+
+    filter_backends = [
+        FilteringFilterBackend,
+        SearchFilterBackend,
+        SuggesterFilterBackend
+    ]
+
+    search_fields = (
+        'user.company_name',
+        'user.username',
+        'user.email',
+        'user.garbage_collector_location.name'
+    )
+
+    filter_fields = {
+        # Add any specific filtering fields if needed
+    }
+
+    suggester_fields = {
+        'user.company_name': {
+            'field': 'user.company_name.suggest',
+            'suggesters': [
+                SUGGESTER_COMPLETION,
+            ],
+        },
+    }
+
+class LocationDocumentView(DocumentViewSet):
+    document = LocationDocument
+    serializer_class = LocationDocumentSerializer
+
+    filter_backends = [
+        FilteringFilterBackend,
+        SearchFilterBackend,
+        SuggesterFilterBackend
+    ]
+
+    search_fields = (
+        'name',
+    )
+
+    filter_fields = {
+        # Add any specific filtering fields if needed
+    }
+
+    suggester_fields = {
+        'name': {
+            'field': 'name.suggest',
+            'suggesters': [
+                SUGGESTER_COMPLETION,
+            ],
+        },
+    }
 
 
 
@@ -33,37 +133,39 @@ class LogoutView(APIView):
       request.user.auth_token.delete()
       return Response(status=status.HTTP_200_OK)
 
-
 class LoginView(TokenObtainPairView):
    serializer_class = LoginSerializer
    renderer_classes = [CustomRenderer]
 
-
 class ChangePasswordAV(generics.UpdateAPIView):
    queryset = CustomUser.objects.all()
-   permission_classes = (IsAuthenticated,)
    serializer_class = ChangePasswordSerializer
 
-
 class CustomerRegistrationView(generics.CreateAPIView):
-   serializer_class = CustomerRegisterationSerializer
+   serializer_class = CustomerRegistrationSerializer
    renderer_classes = [CustomRenderer]
 
    def post(self, request, *args, **kwargs):
-      serializer = CustomerRegisterationSerializer(data=request.data)
+      serializer = CustomerRegistrationSerializer(data=request.data)
       data = {}
-      print(serializer.is_valid(), "dd")
+      print(serializer.is_valid())
       if serializer.is_valid():
          username = serializer.validated_data.get("username")
          first_name = serializer.validated_data.get("first_name")
          last_name = serializer.validated_data.get("last_name")
          email = serializer.validated_data.get("email")
-         customer_location = serializer.validated_data.get("customer_location")
-         print(customer_location)
+         print(email)
+         # location_id = serializer.validated_data.get("customer_location")["id"]
+         print(serializer.data)
+         location_name = serializer.validated_data.get("customer_location").get("name")
+         print(location_name)
+         location = get_object_or_404(Location, name=location_name)
+         print(location)
+         # print(location)
          password = serializer.validated_data.get("password")
          # confirm_password = serializer.validated_data.get("password2")
          account = CustomUser.objects.create_user(
-               first_name=first_name, last_name=last_name, username=username, customer_location=customer_location, email=email, password=password)
+               first_name=first_name, last_name=last_name, username=username, customer_location=location, email=email, password=password)
          data["status"] = "success"
          data["username"] = account.username
          data["email"] = account.email
@@ -76,34 +178,42 @@ class CustomerRegistrationView(generics.CreateAPIView):
       return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 class CompanyRegistrationView(generics.CreateAPIView):
-   serializer_class = CompanyRegisterationSerializer
+   serializer_class = CompanyRegistrationSerializer
    renderer_classes = [CustomRenderer]
 
    def post(self, request, *args, **kwargs):
-      serializer = CompanyRegisterationSerializer(data=request.data)
+      serializer = CompanyRegistrationSerializer(data=request.data)
       data = {}
-      print(serializer.is_valid(), "dd")
+      print(serializer.is_valid())
       if serializer.is_valid():
          username = serializer.validated_data.get("username")
          company_name = serializer.validated_data.get("company_name")
          phone_number = serializer.validated_data.get("phone_number")
          email = serializer.validated_data.get("email")
-         garbage_collector_location = serializer.validated_data.get("garbage_collector_location")
-         print(garbage_collector_location)
+         garbage_collector_locations = serializer.validated_data.get("garbage_collector_location")
+         # print(garbage_collector_locations)
          password = serializer.validated_data.get("password")
          # confirm_password = serializer.validated_data.get("password2")
+            
          account = CustomUser.objects.create_user(
-               company_name=company_name, phone_number=phone_number, username=username, garbage_collector_location=garbage_collector_location, email=email, password=password)
+               company_name=company_name, phone_number=phone_number, username=username, email=email, password=password)
+         # Create garbage collector locations
+         for location in garbage_collector_locations:
+            garbage_collector_location = Location.objects.create(name=location.get("name"))
+            account.garbage_collector_location.set([garbage_collector_location])
+
          data["status"] = "success"
          data["username"] = account.username
          data["email"] = account.email
          refresh_token = RefreshToken.for_user(account)
          data["refresh_token"] = str(refresh_token)
          data["access_token"] = str(refresh_token.access_token)
+         messages.success(request, "Thank you for signing up! You will be contacted shortly if your registration is approved.")
          return Response(data, status=status.HTTP_201_CREATED)
       data["error"] = serializer.errors
       data["status"] = "success"
       return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ForgotPassordAV(APIView):
    serializer_class = ResetPasswordSerializer
@@ -145,7 +255,6 @@ class ResetPassordAV(APIView):
       except DjangoUnicodeDecodeError as e:
          return Response({"status": "fail", "message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-
 class SetNewPasswordAV(generics.GenericAPIView):
    serializer_class = SetNewPasswordSerializer
    renderer_classes = [CustomRenderer]
@@ -155,5 +264,14 @@ class SetNewPasswordAV(generics.GenericAPIView):
       serializer.is_valid(raise_exception=True)
       return Response({"status": "success", "message": "Password was successfully reset"}, status=status.HTTP_200_OK)
 
+class CustomerEditView(generics.UpdateAPIView):
+   serializer_class = CustomerEditSerializer
+   queryset = CustomUser.objects.all()
 
+class MyCompanyEditView(generics.UpdateAPIView):
+   serializer_class = MyCompanyEditSerializer
+   queryset = CustomUser.objects.all()
 
+class ListCreateLocationView(generics.ListCreateAPIView):
+   serializer_class= LocationSerializer
+   queryset= Location.objects.all()

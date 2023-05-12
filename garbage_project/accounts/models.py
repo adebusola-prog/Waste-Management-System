@@ -1,9 +1,9 @@
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.urls import reverse
 from django.db import models
-
+from django.urls import reverse
 
 from phonenumber_field.modelfields import PhoneNumberField
+
 
 class InactiveManager(models.Manager):
    
@@ -23,7 +23,6 @@ class AcceptedGarbageCollector(models.Manager):
 class UnacceptedGarbageCollector(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_accepted=False)
-
 
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=30, null=True, blank=True)
@@ -49,10 +48,7 @@ class CustomUser(AbstractUser):
     
 
     def __str__(self):
-        if self.company_name:
-            return f"{self.email} - {self.company_name}_{self.id}"
-        else:
-            return f"{self.email} _ {self.id}"
+        return self.username
 
     # def get_absolute_url(self):
     #     return reverse('account:user_detail',
@@ -77,8 +73,9 @@ class GarbageCollector(models.Model):
     accepted_collectors=AcceptedGarbageCollector()
     unaccepted_collectors=UnacceptedGarbageCollector()
 
-    def __str__(self) :
-        return self.user.company_name
+    def __str__(self):
+        return self.user.username
+            
     
 
 class CustomerProfile(models.Model):

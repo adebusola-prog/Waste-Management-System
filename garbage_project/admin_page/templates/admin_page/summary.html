@@ -1,0 +1,170 @@
+{% include 'admin_page/header2.html' %}
+{% load static %}
+<style>
+    .centered {
+      margin: 0 auto;
+      width: 90%;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
+<div class="centered">
+    <table>
+        <thead>
+        <tr>
+            <th>Accepted Collectors</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        {% for collector in accepted_collectors %}
+        <tr>
+            <td><a href="">{{ collector.user.company_name }}</a></td>
+        
+        {% endfor %}
+       
+        </tr>
+        
+        </tbody>
+        <br>
+        <h6>Accepted Collectors Number</h6> {{ accepted_collectors_number }}
+        <br>
+        
+    </table>
+    <br>
+    <h5>>UNACCEPTED COLLECTORS</h5>
+    <table>
+        <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Unaccepted Collectors Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for collector in unaccepted_collectors %}
+        <tr>
+            <td><a href="">{{ collector.user.company_name }}</a></td>
+            <td>{{ unaccepted_collectors_number }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h5>ACTIVE USERS</h5>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for one in active_users %}
+        <tr>
+            <td>{{ one.username }}</td>
+            <td>{{ one.email }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h5>INACTIVE USERS</h5>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in inactive_users %}
+        <tr>
+            <td>{{ user.username }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h5>ACTIVE PLANS</h5>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>Garbage Collector</th>
+            <th>Status</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for plan in active_plans %}
+        <tr>
+            <td>{{ plan.garbage_collector.user.company_name }}</td>
+            <td>{{ plan.status }}</td>
+            <td>{{ plan.price }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h5>INACTIVE PLANS</h5>
+    <table>
+        <thead>
+        <tr>
+            
+            <th>Garbage Collector</th>
+            <th>Status</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for plan in inactive_plans %}
+        <tr>
+            <td>{{ plan.garbage_collector.user.company_name }}</td>
+            <td>{{ plan.status }}</td>
+            <td>{{ plan.price }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h5>ACTIVE COLLECTION REQUESTS</h5>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Garbage Collector</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for request in active_requests %}
+        <tr>
+            <td>{{ request.customer.username }}</td>
+            <td>{{ request.garbage_collector.user.company_name }}</td>
+            <td>{{ request.status }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- <table>
+        <thead>
+        <tr>
+            <th>Inactive Requests</th>
+            <th>Customer</th>
+            <th>Garbage Collector</th>
+            <th>Status</th>
+        </tr>
+        </thead> -->
+    </div>
+  

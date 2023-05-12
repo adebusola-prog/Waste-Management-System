@@ -1,9 +1,8 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from .models import CustomUser, GarbageCollector, CustomerProfile
 from garbage_app.models import Location, CollectionPlan
-
 
 class GarbageCollectorCreationForm(UserCreationForm):
    company_name = forms.CharField(required=True)
@@ -23,13 +22,11 @@ class GarbageCollectorCreationForm(UserCreationForm):
       locations = self.cleaned_data['garbage_collector_location']
       return locations
 
-
 class MyCompanyEditForm(UserChangeForm):
    class Meta:
       model = CustomUser
       fields = ('username', 'email', 'company_name', 'garbage_collector_location',
                'profile_picture', 'phone_number')
-
 
 class CustomerCreationForm(UserCreationForm):
    first_name = forms.CharField(required=True)
@@ -54,7 +51,6 @@ class CustomerCreationForm(UserCreationForm):
       self.fields['username'].required = True
       self.fields['email'].required = True
       self.fields['customer_location'].required = True
-
 
 class CustomerEditForm(UserChangeForm):
    class Meta:

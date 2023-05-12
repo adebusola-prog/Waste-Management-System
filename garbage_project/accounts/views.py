@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import (
+    authenticate, login, logout, update_session_auth_hash
+)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
@@ -9,16 +11,20 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse 
+from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import DetailView
+from django.template.loader import render_to_string
+from django.views import View
 
-from .forms import CustomerCreationForm, CustomerEditForm, GarbageCollectorCreationForm, MyCompanyEditForm
+from accounts.forms import (
+    CustomerCreationForm, CustomerEditForm,
+    GarbageCollectorCreationForm, MyCompanyEditForm,
+)
 from accounts.models import CustomUser
 
 
-# Create your views here.
 
 def sign_up(request):
    form = GarbageCollectorCreationForm()
@@ -34,6 +40,7 @@ def sign_up(request):
          form.save_m2m()
 
          my_user = CustomUser.active_objects.get(email=request.POST.get("email"))
+         messages.success(request, "Thank you for signing up! You will be contacted shortly if your registration is approved.")
          login(request, my_user)
          return HttpResponseRedirect(reverse("garbage:home_page"))
       messages.error(request, 'An error occurred during details entry, please check ')
@@ -171,6 +178,7 @@ def recover_password(request):
    }
    return render(request, "accounts/signin_signup.html", context)
 
+       
 def reset_password(request, uid, token):
    if request.method == "POST":
       try:

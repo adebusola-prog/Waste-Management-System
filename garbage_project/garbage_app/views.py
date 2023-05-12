@@ -1,19 +1,26 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+
+import json
+
+from accounts.documents import LocationDocument, GarbageCollectorDocument, CustomUserDocument
+from accounts.models import CustomUser, GarbageCollector
+from elasticsearch_dsl import Q
 
 from .forms import CollectionRequestForm, CollectionPlanForm, RequestRejectionForm
 from .models import CollectionPlan, CollectionRequest
-from accounts.models import CustomUser, GarbageCollector
 
 
 def home_page(request):
    if request.user.is_authenticated:
       user_id = request.user.id
-      return render(request, 'garbage_app/home.html', {'user_id': user_id})
+      return render(request, 'garbage_app/home.html', {'user_id': user_id, "page":"home"}, )
    else:
       return render(request, 'garbage_app/home.html', {})
 
@@ -23,7 +30,6 @@ def customers_page(request, pk):
    if request.user.id != pk:
       return HttpResponseForbidden()
 
-   all_users=CustomUser.active_objects.all()
    customer=CustomUser.active_objects.filter(customer_location__isnull=False).filter(id=pk).first()
 
    if customer is not None and not request.user.is_superuser:
@@ -31,14 +37,21 @@ def customers_page(request, pk):
    else:
       garbagecollectors = None
       messages.info(request, "No Collector in your location")
+   
    context={"customer": customer, 
-            'garbagecollectors':garbagecollectors, 'all_users': all_users}
+            'garbagecollectors':garbagecollectors,}
    return render(request, 'garbage_app/customers_page.html', context) 
 
 
-@login_required
+@login_required(login_url="accounts:sign_in")
 def create_collection_plan(request):
-   form = CollectionPlanForm(initial={'garbage_collector': request.user.garbagecollector})
+   try:
+      garbage_collector = request.user.garbagecollector
+      form = CollectionPlanForm(initial={'garbage_collector': garbage_collector})
+   except ObjectDoesNotExist:
+      messages.error(request, "Your registration has not been approved. After approval you can create a plan.")
+      return redirect('accounts:sign_in')
+   
    if request.method=="POST":
       form= CollectionPlanForm(request.POST)
       if form.is_valid():
@@ -46,7 +59,7 @@ def create_collection_plan(request):
          my_form.garbage_collector=request.user.garbagecollector
          my_form.save()
          messages.success(request, "form uploaded successfully")
-# change the redirect
+
       return redirect('garbage:home_page')
    
    else:
@@ -54,7 +67,7 @@ def create_collection_plan(request):
       context={'form': form}
    return render(request, 'garbage_app/plan_form.html', context)
 
-   
+
 @login_required
 def collection_plan(request):
    plans=CollectionPlan.active_objects.all()
@@ -62,34 +75,26 @@ def collection_plan(request):
    return render(request, 'garbage_app/plan.html', context)
 
 
-def plan_detail(request, pk):
-   plan=CollectionPlan.active_objects.filter(id=pk).first()
-   context={'plan':plan}
-   return render(request, 'garbage_app/plan_detail.html', context)
-
-
 @login_required
 def companys_page(request, id, pk):
-   company= GarbageCollector.accepted_collectors.filter(id=pk, user_id=id).first()
-   plans=CollectionPlan.active_objects.filter(garbage_collector=company)
-   garbage_collector = GarbageCollector.accepted_collectors.get(id=pk)
-   plans = CollectionPlan.objects.filter(garbage_collector=garbage_collector)
-    
+   company = get_object_or_404(GarbageCollector.accepted_collectors, id=pk, user_id=id)
+   plans = CollectionPlan.active_objects.filter(garbage_collector=company)
+
    if request.method == 'POST':
       form = CollectionRequestForm(request.POST)
       if form.is_valid():
          plan_id = form.cleaned_data.get('plan')
          address = form.cleaned_data.get('address')
-         
-         
-         CollectionRequest.objects.get_or_create(
-               garbage_collector=garbage_collector,
-               customer=request.user,
-               plan=plan_id,
-               location=request.user.customer_location,
-               address=address
+
+         CollectionRequest.objects.create(
+            garbage_collector=company,
+            customer=request.user,
+            plan=plan_id,
+            location=request.user.customer_location,
+            address=address
          )
-         return redirect('garbage/home_page')
+         redirect_url = request.get_full_path()
+         return HttpResponseRedirect(redirect_url)
    else:
       form = CollectionRequestForm()
 
@@ -103,15 +108,25 @@ def companys_page(request, id, pk):
    return render(request, 'garbage_app/company.html', context)
 
 
-@login_required
-def company_profile(request, pk):
-   if request.user.id != pk:
+# @login_required
+# def company_profile(request, pk):
+#    if request.user.id != pk:
+#       return HttpResponseForbidden()
+#    company= GarbageCollector.accepted_collectors.filter(user_id=pk).first()
+#    plans=CollectionPlan.active_objects.filter(garbage_collector=company)
+
+#    context={'company':company, 'plans':plans}
+#    return render(request, "garbage_app/companys_profile.html", context)
+
+def company_profile(request):
+   if not request.user.garbage_collector_location:
       return HttpResponseForbidden()
-   company= GarbageCollector.accepted_collectors.filter(user_id=pk).first()
+   company= GarbageCollector.accepted_collectors.filter(user=request.user).first()
    plans=CollectionPlan.active_objects.filter(garbage_collector=company)
 
    context={'company':company, 'plans':plans}
    return render(request, "garbage_app/companys_profile.html", context)
+
 
 @login_required
 def company_collection_request(request, pk):
@@ -146,10 +161,9 @@ def accept_request(request, pk):
    return HttpResponseRedirect(redirect_url)
 
 
-# add a form to fill for rejection here
 @login_required
 def reject_request(request, pk):
-   if request.user.id != pk:
+   if request.user.id != pk and not request.user.garbagecollector:
       return HttpResponseForbidden()
 
    company_request = GarbageCollector.accepted_collectors.filter(user_id=pk).first()
@@ -169,6 +183,9 @@ def reject_request(request, pk):
                my_form=form.save(commit=False)
                my_form.rejection_reason = rejection_reason
                my_form.save()
+               # asynchronous task
+               # json_data = json.dumps(request_obj, cls=DjangoJSONEncoder)
+               # send_reject_email.delay(json_data, rejection_reason)
                send_reject_email(request_obj, rejection_reason)
                break
          else:
@@ -203,3 +220,16 @@ def send_reject_email(request_obj, rejection_reason):
    message = f"Your request has been rejected and the status is now {request_obj.status} by {request_obj.garbage_collector.user.company_name}. " \
             f"Reason for rejection: {rejection_reason}"
    send_mail(subject, message, 'adebusolayeye@gmail.com', [request_obj.customer.email, 'adebusolayeye@gmail.com'])
+
+
+
+# @login_required
+# def company_collection_request(request):
+#    if not request.user.garbage_collector_location:
+#       return HttpResponseForbidden()
+#    company_request= GarbageCollector.accepted_collectors.filter(user=request.user).first()
+#    all_request=CollectionRequest.active_objects.filter(garbage_collector=company_request)
+         
+#    context={'all_request': all_request}
+#    return render(request, "garbage_app/collection_request.html", context)
+

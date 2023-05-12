@@ -103,10 +103,10 @@
                {% endif %}
                <a href="#" class="text-dark"><h4>COMPANY PAGE</h4></a>
                <hr>
-                  <form class="d-flex" method="GET", action="">
+                  <!-- <form class="d-flex" method="GET", action="">
                      <input class="form-control me-2" type="text" name="q", placeholder="Search">
                      <button class="btn btn-dark" type="submit">Search</button>
-                  </form>
+                  </form> -->
                <!-- <hr>
                <a href="#" class="text-dark"><h4>COLLECTORS IN MY LOCATION</h4></a>
                <hr> -->
@@ -116,12 +116,13 @@
                <hr>
                <a href="#" class="text-dark"><h6>REGISTER COMPLAINT</h6></a>
                <hr>
+               <!-- <hr>
                <a href="#" class="text-dark"><h6>TRANSACTION HISTORY</h6></a>
-               <hr>
+               <hr> -->
                <a href="{% url 'garbage:customer_request' request.user.id %}" class="text-dark"><h6>CUSTOMER'S REQUEST</h6></a>
-               <hr>
+               <!-- <hr>
                <a href="#" class="text-dark"><h6>ACCEPTED REQUEST</h6></a>
-               <hr>
+               <hr> -->
             </div>   
 {% block content %} 
             <div class="col-sm-4">
@@ -143,10 +144,11 @@
                      <span class="profile-label">Username:</span>
                      <span class="profile-value">{{ user.username }}</span>
                   </li>
-                  <li>
+                  <!-- <li>
                      <span class="profile-label">Email:</span>
                      <span class="profile-value">{{ user.email }}</span>
-                  </li>
+                  </li> -->
+                  <hr>
                   <li>
                       <h6>Our Locations:</h6>{% for location in user.garbage_collector_location.all %}
                       <hr>
@@ -163,14 +165,18 @@
                      <thead>
                         <tr>
                            <th>Plan</th>
-                           <th>Price</th>
+                           <th>Price(Naira)</th>
+                           <th>Description</th>
+                           <th>Weight(kg)</th>
                         </tr>
                      </thead>
                      <tbody>
                         {% for plan in plans %}
                         <tr>
                            <td>{{ plan.status }}</td>
-                           <td>{{ plan.price }}</td>
+                           <td>N{{ plan.price }}</td>
+                           <td>{{ plan.description }}</td>
+                           <td>{{ plan.weight }}</td>
                         </tr>
                         {% endfor %}
                      </tbody>

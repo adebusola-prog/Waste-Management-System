@@ -17,6 +17,45 @@
       margin-left: 10px;
    }
 </style>
+
+{% include "accounts/header.html" %}
+{% load static %}
+<style>
+   .plan-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .plan-table th,
+   .plan-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .plan-table th {
+      background-color: #f2f2f2;
+   }
+
+   .profile-table,
+   .location-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .profile-table th,
+   .profile-table td,
+   .location-table th,
+   .location-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .profile-table th {
+      background-color: #f2f2f2;
+   }
+</style>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,11 +95,7 @@
         </div>
       </div>
     </nav>
-
-
 <br>
-
-   
       <div class="container">
          <div class="row">
             <div class="col-sm-3 bg-success ">
@@ -69,19 +104,22 @@
                {% endif %}
                <a href="#" class="text-dark"><h4>MY PROFILE</h4></a>
                <hr>
-                  <form class="d-flex" method="GET", action="">
+             
+                  <form class="d-flex" method="GET" action="{% url 'garbage:search' %}">
                      <input class="form-control me-2" type="text" name="q", placeholder="Search">
                      <button class="btn btn-dark" type="submit">Search</button>
                   </form>
+
+                  
                <hr>
                <a href="#" class="text-dark"><h5>GARBAGE COLLECTORS IN MY LOCATION</h5></a>
                <hr>
                <a href="{% url 'accounts:customer_update_details' request.user.id %}" class="text-dark"><h5>UPDATE PROFILE</h5></a>
+               
+               <!-- <a href="#" class="text-dark"><h5>REGISTER COMPLAINT</h5></a> -->
                <hr>
-               <a href="#" class="text-dark"><h5>REGISTER COMPLAINT</h5></a>
-               <hr>
-               <a href="#" class="text-dark"><h5>TRANSACTION HISTORY</h5></a>
-               <hr>
+               <!-- <a href="#" class="text-dark"><h5>TRANSACTION HISTORY</h5></a> -->
+               
                <a href="{% url 'garbage:customers_subscription' request.user.id %}" class="text-dark"><h5>MY SUBSCRIPTION/PLAN</h5></a>
                <hr>
             </div>    
@@ -114,7 +152,7 @@
                   </li>
                   <li>
                      <span class="profile-label">Preferred Location:</span>
-                     <span class="profile-value">{{ customer.customer_location }}</span>
+                     <span class="profile-value">{{ customer.customer_location.name }}</span>
                   </li>
                   <li>
                      <span class="profile-label">Profile_picture:</span>

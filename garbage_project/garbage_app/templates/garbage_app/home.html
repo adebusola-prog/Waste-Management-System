@@ -33,7 +33,7 @@
             </li>
             {% if request.user.is_authenticated and request.user.company_name %}
                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'garbage:profile_page' request.user.id %}">COMPANY PROFILE</a>
+                  <a class="nav-link" href="{% url 'garbage:profile_page' %}">COMPANY PROFILE</a>
                </li>
             {% endif %}
             
@@ -41,8 +41,11 @@
                <a class="nav-link" href="{% url 'accounts:sign_out' %}">Log Out</a>
             </li>
             {% if request.user.is_authenticated and request.user.is_superuser %}
+            <!-- <li class="nav-item">
+               <a class="nav-link" href="{% url 'adminpage:accept_collector' %}">Admin DASHBOARD</a>
+            </li>  -->
             <li class="nav-item">
-               <a class="nav-link" href="">Admin Login</a>
+               <a class="nav-link" href="{% url 'adminpage:accept_list' %}">ADMIN ACCEPT REQUEST</a>
             </li> 
             {% endif %}
             {% if request.user.is_authenticated and request.user.customer_location %}
@@ -50,9 +53,13 @@
                   <a class="nav-link" href="{% url 'garbage:my_page' request.user.id %}">MY DASHBOARD</a>
                </li>
             {% endif %}
+            
             <li class="nav-item">
-               <a class="nav-link" href="">All Garbage Collectors</a>
-             </li>
+               <a class="nav-link" href="{% url 'adminpage:contact_create' %}">contact us</a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link" href="{% url 'adminpage:faq' %}">FAQ</a>
+            </li>
           </ul>
           
         </div>
@@ -67,26 +74,22 @@
                   <h3>Welcome: {{request.user.username | title}}</h3>
                   How can we server you? 
                {% endif %}<hr>
-               <form class="d-flex" method="GET", action="">
+               <!-- {% if 'q' in request.path %}
+                  <h2 class="title-page">Search Result</h2>
+               {% endif %} -->
+               <!-- <form class="d-flex" method="GET", action="{% url 'garbage:home_page' %}">
                   <input class="form-control me-2" type="text" name="q", placeholder="Search">
                   <button class="btn btn-dark" type="submit">Search</button>
-               </form>
-            <hr>
-               <!-- <a href=""><h4>My profile</h4></a> -->
+               </form> -->
+            
+               
                <h4>GO CLEAN</h4>
                GO CLEAN provides door services for you. We know
                getting clean is desirable but challenging. With our services, we 
                can make this convenient for you
-               <!-- <a href=""><h4>READ MORE</h4></a> -->
-               <!-- <a href=""><h4>Home</h4></a>
-               <hr>
-               <a href=""><h4>New Note</h4></a>
-               <hr>
-               <a href=""><h4>Pinned Note</h4></a>
-               <hr>
-               <a href=""><h4>Note</h4></a> -->
-               <hr>
                
+               
+         
                
                
             </div>    

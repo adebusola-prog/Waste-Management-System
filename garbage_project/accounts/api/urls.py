@@ -1,14 +1,15 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from . import views
-from rest_framework_simplejwt.views import(
-   TokenRefreshView,
-)
+from garbage_app.models import Location
+
 
 urlpatterns=[
-   path('login', views.LoginView.as_view(), name='admin-login'),
-    
+   path('login', views.LoginView.as_view(), name='login'),
+   
+   path('location', views.ListCreateLocationView.as_view(), name="location_create"),
    path('customer/register', views.CustomerRegistrationView.as_view(), name='customer_register'),
    path('company/register', views.CompanyRegistrationView.as_view(), name='company_register'),
    path('logout/', views.LogoutView.as_view(), name='logout'),
