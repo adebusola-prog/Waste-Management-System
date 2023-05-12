@@ -33,7 +33,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['https://garbage-management-system-production.up.railway.app/', '127.0.0.1']
+ALLOWED_HOSTS = ['https://garbage-management-system-production.up.railway.app/', '*']
 
 
 # Application definition
