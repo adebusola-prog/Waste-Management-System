@@ -21,7 +21,7 @@ router.register(r'location-search', LocationDocumentView, basename='location-sea
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("account/", include('accounts.urls', namespace='accounts')),
-    path("", include('garbage_app.urls', namespace='garbage')),
+    path("garbage/", include('garbage_app.urls', namespace='garbage')),
     path("", include("admin_page.urls", namespace="adminpage")),
     path("api/", include('accounts.api.urls')),
     path('api/', include('garbage_app.api.urls')),
