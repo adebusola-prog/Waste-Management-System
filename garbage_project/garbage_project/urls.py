@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/', include('garbage_app.api.urls')),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
-    path('', RedirectView.as_view(url='garbage/', permanent=True)),
+    # path('', RedirectView.as_view(url='garbage/', permanent=True)),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
