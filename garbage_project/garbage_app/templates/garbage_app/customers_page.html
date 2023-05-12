@@ -106,6 +106,7 @@
                <hr>
              
                   <form class="d-flex" method="GET" action="{% url 'garbage:search' %}">
+                     {% csrf_token %}
                      <input class="form-control me-2" type="text" name="q", placeholder="Search">
                      <button class="btn btn-dark" type="submit">Search</button>
                   </form>
