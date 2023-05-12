@@ -77,6 +77,14 @@ ELASTICSEARCH_INDEX_NAMES = {
 
 CSRF_TRUSTED_ORIGINS = ['https://garbage-management-system-production.up.railway.app']
 
+CORS_ALLOWED_ORIGINS = [
+    'https://garbage-management-system-production.up.railway.app'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://garbage-management-system-production.up.railway.app'
+]
+
 CRISPY_TEMPLATE_PACK = 'uni_form'
 
 MIDDLEWARE = [
