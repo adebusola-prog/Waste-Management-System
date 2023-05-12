@@ -33,7 +33,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", cast=bool)
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['https://garbage-management-system-production.up.railway.app/admin/', '*']
+ALLOWED_HOSTS = ['https://garbage-management-system-production.up.railway.app', '*']
 
 
 # Application definition
@@ -75,21 +75,21 @@ ELASTICSEARCH_INDEX_NAMES = {
     'garbage_app.Location': 'location_index',
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://garbage-management-system-production.up.railway.app/admin/']
+CSRF_TRUSTED_ORIGINS = ['https://garbage-management-system-production.up.railway.app']
 
 CORS_ALLOWED_ORIGINS = [
-    'https://garbage-management-system-production.up.railway.app/admin/'
+    'https://garbage-management-system-production.up.railway.app'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://garbage-management-system-production.up.railway.app/admin/'
+    'https://garbage-management-system-production.up.railway.app'
 ]
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

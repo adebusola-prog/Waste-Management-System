@@ -11,6 +11,7 @@ urlpatterns=[
    
    path('location', views.ListCreateLocationView.as_view(), name="location_create"),
    path('customer/register', views.CustomerRegistrationView.as_view(), name='customer_register'),
+   path('customer/<int:pk>/edit', views.CustomerEditView.as_view(), name='customer_edit'),
    path('company/register', views.CompanyRegistrationView.as_view(), name='company_register'),
    path('logout/', views.LogoutView.as_view(), name='logout'),
    path('change-password/<int:pk>/', views.ChangePasswordAV.as_view(),

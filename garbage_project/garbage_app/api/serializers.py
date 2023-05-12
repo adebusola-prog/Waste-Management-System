@@ -2,17 +2,11 @@ from ..models import CollectionPlan, CollectionRequest, Location
 from rest_framework import serializers
 from accounts.models import GarbageCollector, CustomUser
 
-# Garbage collectors
-# can view collection requests
-# can accept or reject (with reason) collection requests
-# can create collection plans(daily, weekly) with prices
 
-# .all--->remove add specific fields
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model=Location
         fields=("name",)
-
 
 class CompanyCustomUserSerializer(serializers.ModelSerializer):
     garbage_collector_location = serializers.SerializerMethodField()

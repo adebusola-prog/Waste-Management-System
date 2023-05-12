@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import UpdateAPIView
 
 from accounts.api.renderers import CustomRenderer
 from accounts.api.serializers import (
@@ -258,19 +260,25 @@ class ResetPassordAV(APIView):
 class SetNewPasswordAV(generics.GenericAPIView):
    serializer_class = SetNewPasswordSerializer
    renderer_classes = [CustomRenderer]
+class CustomerEditView(UpdateAPIView):
+    serializer_class = CustomerEditSerializer
+    queryset = CustomUser.objects.all()
+    permission_classes = [IsAuthenticated]
 
-   def patch(self, request, *args, **kwargs):
-      serializer = self.serializer_class(data=request.data)
-      serializer.is_valid(raise_exception=True)
-      return Response({"status": "success", "message": "Password was successfully reset"}, status=status.HTTP_200_OK)
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
 
-class CustomerEditView(generics.UpdateAPIView):
-   serializer_class = CustomerEditSerializer
-   queryset = CustomUser.objects.all()
+    def patch(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"status": "success", "message": "Password was successfully reset"}, status=status.HTTP_200_OK)
+
+
 
 class MyCompanyEditView(generics.UpdateAPIView):
    serializer_class = MyCompanyEditSerializer
    queryset = CustomUser.objects.all()
+
 
 class ListCreateLocationView(generics.ListCreateAPIView):
    serializer_class= LocationSerializer
