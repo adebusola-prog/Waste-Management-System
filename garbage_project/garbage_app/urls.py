@@ -7,9 +7,9 @@ from contact_us.views import search
 app_name='garbage'
 
 urlpatterns=[
-   path("", views.home_page, name="home_page"),
-   path("<int:pk>/customer_page", views.customers_page, name="my_page"),
+   path("home", views.home_page, name="home_page"),
    path("profile", views.company_profile, name="profile_page"),
+   path("<int:pk>/customer_page", views.customers_page, name="my_page"),
    path("<int:pk>/customer_request", views.company_collection_request, name="customer_request"),
    path("<int:pk>/accept_request", views.accept_request, name="request_accepted"),
    path("<int:pk>/reject_request", views.reject_request, name="request_rejected"),

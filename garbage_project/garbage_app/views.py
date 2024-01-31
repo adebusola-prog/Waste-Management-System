@@ -60,7 +60,7 @@ def create_collection_plan(request):
          my_form.save()
          messages.success(request, "form uploaded successfully")
 
-      return redirect('garbage:home_page')
+      return redirect('garbage:profile_page')
    
    else:
       form=CollectionPlanForm()
@@ -107,17 +107,7 @@ def companys_page(request, id, pk):
 
    return render(request, 'garbage_app/company.html', context)
 
-
-# @login_required
-# def company_profile(request, pk):
-#    if request.user.id != pk:
-#       return HttpResponseForbidden()
-#    company= GarbageCollector.accepted_collectors.filter(user_id=pk).first()
-#    plans=CollectionPlan.active_objects.filter(garbage_collector=company)
-
-#    context={'company':company, 'plans':plans}
-#    return render(request, "garbage_app/companys_profile.html", context)
-
+@login_required
 def company_profile(request):
    if not request.user.garbage_collector_location:
       return HttpResponseForbidden()
@@ -183,13 +173,9 @@ def reject_request(request, pk):
                my_form=form.save(commit=False)
                my_form.rejection_reason = rejection_reason
                my_form.save()
-               # asynchronous task
-               # json_data = json.dumps(request_obj, cls=DjangoJSONEncoder)
-               # send_reject_email.delay(json_data, rejection_reason)
                send_reject_email(request_obj, rejection_reason)
                break
          else:
-            print(form.errors)
             form = RequestRejectionForm()
 
       redirect_url = reverse('garbage:request_rejected', kwargs={'pk': pk})
@@ -220,16 +206,3 @@ def send_reject_email(request_obj, rejection_reason):
    message = f"Your request has been rejected and the status is now {request_obj.status} by {request_obj.garbage_collector.user.company_name}. " \
             f"Reason for rejection: {rejection_reason}"
    send_mail(subject, message, 'adebusolayeye@gmail.com', [request_obj.customer.email, 'adebusolayeye@gmail.com'])
-
-
-
-# @login_required
-# def company_collection_request(request):
-#    if not request.user.garbage_collector_location:
-#       return HttpResponseForbidden()
-#    company_request= GarbageCollector.accepted_collectors.filter(user=request.user).first()
-#    all_request=CollectionRequest.active_objects.filter(garbage_collector=company_request)
-         
-#    context={'all_request': all_request}
-#    return render(request, "garbage_app/collection_request.html", context)
-

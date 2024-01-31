@@ -6,17 +6,19 @@ class ActiveManager(models.Manager):
    def get_queryset(self):
       return super().get_queryset().filter(is_active=True)
    
+
 class InactiveManager(models.Manager):
-   
     def get_queryset(self):
         return super().get_queryset().filter(is_active=False)
     
+
 class Location(models.Model):
    name = models.CharField(max_length=100)
    address=models.CharField(max_length=200)
    
    def __str__(self):
       return self.name
+
 
 class CollectionPlan(models.Model):
    class Status(models.TextChoices):
@@ -45,6 +47,7 @@ class CollectionPlan(models.Model):
    class Meta:
       ordering=['-updated_at']
 
+
 class CollectionRequest(models.Model):
    class Status(models.TextChoices):
       PENDING= 'PENDING', 'Pending'
@@ -71,6 +74,3 @@ class CollectionRequest(models.Model):
    
    class Meta:
       ordering=['-updated_at']
-
-
-

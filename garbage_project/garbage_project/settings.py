@@ -17,7 +17,7 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_URL= config('DATABASE_URL')
+# DATABASE_URL= config('DATABASE_URL')
 
 
 
@@ -57,28 +57,25 @@ INSTALLED_APPS = [
 
     "phonenumber_field", 
 
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
+    # 'django_elasticsearch_dsl',
+    # 'django_elasticsearch_dsl_drf',
 ]
 
 
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'localhost:9200',
-        'http_auth': ('elastic', config('ELASTICSEARCH_PASSWORD'))
-    },
-}
+# ELASTICSEARCH_DSL={
+#     'default': {
+#         'hosts': 'localhost:9200',
+#         'http_auth': ('elastic', config('ELASTICSEARCH_PASSWORD'))
+#     },
+# }
 
-ELASTICSEARCH_INDEX_NAMES = {
-    'accounts.CustomUser': 'customuser_index',
-    'accounts.GarbageCollector': 'garbagecollector_index',
-    'garbage_app.Location': 'location_index',
-}
+# ELASTICSEARCH_INDEX_NAMES = {
+#     'accounts.CustomUser': 'customuser_index',
+#     'accounts.GarbageCollector': 'garbagecollector_index',
+#     'garbage_app.Location': 'location_index',
+# }
 
 CSRF_TRUSTED_ORIGINS = ['https://garbage-management-system-production.up.railway.app']
-
-
-
 
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
@@ -121,7 +118,11 @@ WSGI_APPLICATION = "garbage_project.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=1800)
+    # "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=1800)
+     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3"
+    }
 }
 
 

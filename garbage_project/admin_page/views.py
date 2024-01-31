@@ -87,6 +87,4 @@ def unaccepted_collector_changed(request, pk):
 
     return redirect('adminpage:accept_list')
 
-    # context={"collector":collectors_not_in_garbage_collector, "accepted_collector": accepted_collector, "page": "accepted"}
-    # return render(request, 'admin_page/unaccept_list.html', context)
     

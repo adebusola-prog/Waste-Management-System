@@ -7,18 +7,16 @@ class CollectionPlanForm(forms.ModelForm):
    class Meta:
       model= CollectionPlan
       exclude = ['garbage_collector']
-      fields=('garbage_collector', 'status', 'price', "description", "weight")
+      fields=('garbage_collector', 'status', 'price', 'description', "weight")
+
 
 class CollectionRequestForm(forms.ModelForm):
    class Meta:
       model = CollectionRequest
       fields = ['plan', 'address']
 
+
 class RequestRejectionForm(forms.ModelForm):
    class Meta:
       model = CollectionRequest
       fields = ['rejection_reason']
-
-# class RequestRejectionForm(forms.Form):
-#    rejection_reason = forms.CharField(max_length=200, required=True, widget=forms.TextInput(attrs={'placeholder': 'Enter the reason for rejection'}))
-#    request_id = forms.IntegerField(widget=forms.HiddenInput())
