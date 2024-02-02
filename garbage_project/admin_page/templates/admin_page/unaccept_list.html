@@ -1,0 +1,20 @@
+{% include 'admin_page/header2.html' %}
+ {% if page == "accept_list" %}
+    {% if collectors %} 
+        {% for collector in collectors %}
+            <a href="{% url 'adminpage:accept_detail' collector.pk %}"><p>Company Name:{{ collector.company_name }}</p></a>
+        {% endfor %}
+    {% else %}
+        <p>No Unaccepted collectors found.</p> 
+    {% endif %}
+{% endif %}
+
+{% if page == 'unaccepted' %}
+    <p>{{ collector.company_name }}</p>
+    <p>{{ collector.username }}</p>
+    <p>{{ collector.email }}</p>
+        
+        <a href="{% url 'adminpage:accepted_collector' collector.pk %}">ACCEPT</a>
+{% endif %}
+
+

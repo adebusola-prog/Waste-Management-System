@@ -1,0 +1,124 @@
+{% include "accounts/header.html" %}
+{% load static %}
+<style>
+   .plan-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .plan-table th,
+   .plan-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .plan-table th {
+      background-color: #f2f2f2;
+   }
+
+   .profile-table,
+   .location-table {
+      border-collapse: collapse;
+      width: 100%;
+   }
+
+   .profile-table th,
+   .profile-table td,
+   .location-table th,
+   .location-table td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+   }
+
+   .profile-table th {
+      background-color: #f2f2f2;
+   }
+</style>
+{% block title %}<title>{{page}} page</title>{% endblock %}
+{% block content %}
+   <div class="container">
+      <div class="row">
+         <div class="col-sm-6">
+            <div class="card card-body">
+               <img src="{% static 'images/dustbin2.jpg' %}" alt="ada" class="d-block" style="width:100%">
+            </div>
+         </div>
+         <div class="col-sm-6">
+            <div class="card card-body">
+               <h4>{{ company.user.company_name }}</h4>
+               <li>
+                  <table class="profile-table">
+                     <thead>
+                        <tr>
+                           <th>Company Name</th>
+                           <th>Company's Username</th>
+                           <th>Email</th>
+                           <th>Phone Number</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>{{ company.user.company_name }}</td>
+                           <td>{{ company.user.username }}</td>
+                           <td>{{ company.user.email }}</td>
+                           <td>{{ company.user.phone_number }}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </li>
+               <li>
+                  <table class="location-table">
+                     <thead>
+                        <tr>
+                           <th>Locations they operate</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for location in company.user.garbage_collector_location.all %}
+                           <tr>
+                              <td>{{ location.name }}</td>
+                           </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </li>
+               
+               <h4>COLLECTION PLAN</h4>
+               <li>
+                  <table class="plan-table">
+                     <thead>
+                        <tr>
+                           <th>Plan</th>
+                           <th>Price</th>
+                           <th>Description</th>
+                           <th>Weight</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for plan in plans %}
+                           <tr>
+                              <td>{{ plan.status }}</td>
+                              <td>{{ plan.price }}</td>
+                              <td>{{ plan.description }}</td>
+                              <td>{{ plan.weight }}</td>
+                              <td>
+                                 <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="plan" value="{{ plan.pk }}">
+                                    <input type="text" name="address" placeholder="Enter Pickup Address" required>
+                                    <button type="submit">Subscribe</button>
+                                 </form>
+                              </td>
+                           </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </li>
+               
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}

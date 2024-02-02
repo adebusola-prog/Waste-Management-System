@@ -1,0 +1,174 @@
+{% load static %}
+
+<style>
+
+    .footer{
+        display:grid;
+        grid-template-rows:2fr 1fr 1fr;
+        position:sticky;
+        bottom:0;
+        background-color:;
+        margin:auto;
+    }
+
+    .footer_top{
+        display:grid;
+        grid-template-columns:1fr 3fr 1fr;
+        background-color:green;
+
+    }
+     .f_logo_text{
+        margin-top: 20px;
+        font-size: 30px;
+        font-family: 'Brush Script MT', cursive;
+        color:white;
+    }
+
+    .f_logo{
+        margin-top:10px;
+        filter: invert(100%)
+    }
+
+    .footer_searchbar{
+        margin-left:250px;
+        margin-top: 30px;
+        margin-bottom:10px;
+        color:white;
+        border-radius:5px;
+
+    }
+
+    .footer_searchbar input[type=text]{
+       padding-left:10px;
+       height:35px;
+
+
+    }
+
+    .footer_searchbar h3{
+        margin-bottom:20px;
+    }
+
+    .footer_app h3{
+        margin-bottom:20px;
+    }
+
+    .footer_app{
+        color:white;
+    }
+
+
+     .footer_searchbar p{
+        margin-bottom:10px;
+    }
+
+    .footer_searchbar button{
+        background-color:black;
+        color:white;
+        border:1px solid white;
+        padding:5px 10px;
+        margin-right:10px;
+        cursor:pointer;
+        margin-left :5px;
+        border-radius:5px;
+    }
+
+
+    .f_searchbar {
+        margin-bottom:10px;
+        width:400px;
+        height:40px;
+        border-radius:8px;
+    }
+
+    .f_searchbar {
+        margin-bottom:10px;
+        width:400px;
+        height:40px;
+        border-radius:8px;
+    }
+
+    /* .footer_mid_2{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background-color:green;
+
+    } */
+
+    .footer_mid_2 p{
+       font-size:25px;
+       color:white;
+    }
+
+    .footer_mid_2 p{
+        font-family: 'Brush Script MT', cursive;
+
+    }
+
+
+    /* .footer_bottom{
+        background-color:green;
+    } */
+
+    .footer_bottom img{
+        max-width:20px;
+        margin: 0 10px;
+        filter:invert(100%);
+    }
+
+    .footer_bottom p{
+        font-size:20px;
+        text-align:center;
+        color:white;
+    }
+
+    .footer_bottom li{
+        display:inline;
+        list-style-type:none;
+        align-items:center;
+    }
+
+    .footer_bottom a{
+        text-decoration:none;
+    }
+
+    .footer_app{
+        margin-top:30px;
+    }
+
+    .footer_app img{
+        max-width:30px;
+        margin:5px 15px 0 0;
+        filter: invert(100%);
+    }
+
+    .social_media_links{
+        margin:10px 0px 0px 550px;
+    }
+
+    .sub_new{
+        margin-top:-10px;
+    }
+
+    .access_offer{
+        margin-top:-10px;
+    }
+
+</style>
+<div class="t_footer">
+    <div class="footer">
+            <div class="footer_top">
+
+                <div class="footer_logo">
+                </div>
+                
+                <div class="footer_searchbar">
+                    <h3><strong>New to Green Harbour?</strong> </h3>
+                    <p class="sub_new">Subscribe to our newsletter to get updates on our latest offers!</p>
+                    <input type="text" value="{{request.user.email}}" class="f_searchbar">
+                    <input type="SUBMIT" value="SUBSCRIBE">
+
+                </div>
+                
+                

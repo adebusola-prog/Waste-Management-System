@@ -1,0 +1,164 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+{% block title %}<title>{{page}} page</title>{% endblock %}
+{% block content %}
+<style>
+  .signin_sign_up{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:9px;
+        margin:50px 400px;
+        background-color:whitesmoke;
+    }
+
+    .sign_up{
+        margin-top:30px;
+        margin-bottom:10px;
+     }
+
+     .signin{
+        margin-top:30px;
+        margin-bottom:10px;
+     }
+
+     .recover_password{
+        margin-top:30px;
+        margin-bottom:10px;
+     }
+
+     .reset_password{
+        margin-top:30px;
+        margin-bottom:10px;
+     }
+
+</style>
+{% include "accounts/header.html" %}
+
+
+<div class="signin_sign_up">
+
+    {% if page == "sign_in" %}
+        <div class="signin">
+            <form method="post" enctype="multipart/form-data" action="">
+              {% csrf_token %}
+              <h4>KINDLY LOG IN</h4>
+              <label>Email: </label>
+              <input type="text" name="email" placeholder="Enter your registered e-mail">
+                <br>
+                <br>
+
+              <label>Password: </label>
+              <input type="password" name="password">
+                <br>
+                <br>
+
+              <input type="submit" value="Log In">
+                <br>
+                <br>
+
+            </form>
+              <p>You don't have an account ? <a href="{% url 'accounts:sign_up' %}">Sign Up</a></p>
+                <br>
+
+                <a href="{% url 'accounts:recover_password' %}"><p>Forgot password ? </p></a>
+                <br>
+                <br>
+          </div>
+    {% endif %}
+
+
+    {% if page == "sign_up" %}
+        <div class="sign_up">
+                <form method="post" action="" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {{form.errors}}
+                    <br>
+                  <h4>PROFILE</h4>
+                  <label>Email: </label>
+                  {{form.email}}
+                   <br>
+                    <br>
+
+                    <label>Username: </label>
+                    {{form.username}}
+                    <br>
+                    <br>
+
+                    <label>Phone number: </label>
+                  {{form.phone_number}}
+                   <br>
+                  <br>
+
+                  <label>Location</label>
+                  {{form.garbage_collector_location}}
+                   <br>
+                  <br>
+
+                  <label>Password </label>
+                  {{form.password1}}
+                   <br>
+                  <br>
+
+                    <label>Password Confirmation: </label>
+
+                  {{form.password2}}
+                   <br>
+                  <br>
+                  
+                  <label>Company name</label>
+                  {{form.company_name}}
+                   <br>
+                  <!-- <br>
+
+                    <input type="checkbox" required><span>I have read the <a href="{% url 'accounts:sign_in' %}" target="_blank">terms and condition</a>
+                    and I agree to it. </span>
+                   <br> -->
+                  <br>
+
+                    <input type="submit" value="Sign up">
+                </form>
+                <br>
+                <p>Already have an account ? <a href="{% url 'accounts:sign_in' %}">Sign in </a></p>
+
+            </div>
+    {% endif %}
+
+    {% if page == 'recover_password' %}
+        <div class="reset_password">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Kindly enter Your registered Email:</label>
+            <input type="email" name="email" required>
+
+            <button type="submit">Reset Password</button>
+
+        </form>
+    </div>
+    {% endif %}
+
+
+    {% if page == 'reset_password' %}
+        <div class="reset_password_change">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Kindly enter Your New Password:</label>
+                <input type="password" name="password1" required>
+
+                <label>Kindly Confirm Your password:</label>
+                <input type="password" name="password2" required>
+
+                <button type="submit">Change </button>
+
+            </form>
+        </div>
+    {% endif %}
+
+
+
+
+
+
+
+</div>
+{% endblock %}

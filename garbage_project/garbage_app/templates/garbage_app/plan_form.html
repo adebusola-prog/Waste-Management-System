@@ -1,0 +1,8 @@
+{% include 'accounts/header.html' %}
+<h2>Create your collection plan</h2>
+<form method="post">
+   {% csrf_token %}
+   {{ form.errors }}
+   {{ form.as_p }}
+   <p><input type="submit" value="CREATE"></p>
+</form>
