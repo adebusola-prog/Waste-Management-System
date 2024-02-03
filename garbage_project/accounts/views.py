@@ -77,19 +77,17 @@ def user_sign_in(request):
    elif request.method == "GET":
       return render(request, "accounts/signin_signup.html", {"page": page})
    
-
 def user_sign_out(request):
    logout(request)
-   # user_id = request.user.id
    return HttpResponseRedirect(reverse("garbage:home_page"))
-# , kwargs={'pk': user_id}
+
 
 @login_required(login_url="accounts:sign_in")
 def user_update_details(request, pk):
    if request.user.id != pk:
       return HttpResponseForbidden()
 
-   user = CustomUser.active_objects.get(id=pk)
+   user = CustomUser.active_objects.filter(id=pk).first()
    form = MyCompanyEditForm(instance=user)
    page = "user_update_details"
 
@@ -213,7 +211,6 @@ def reset_password(request, uid, token):
    return render(request, "accounts/signin_signup.html", context)
 
 
-# customer's sign_up sign_in and profile_update
 def customer_sign_up(request):
    form = CustomerCreationForm()
    page = "customer_sign_up"

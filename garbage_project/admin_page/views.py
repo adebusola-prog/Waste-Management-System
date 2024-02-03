@@ -62,7 +62,7 @@ def unaccepted_collectors_list(request):
 def unaccepted_collector_detail(request, pk):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    collectors_with_location = CustomUser.active_objects.filter(garbage_collector_location__isnull=False)
+    collectors_with_location = CustomUser.active_objects.filter(garbage_collector_location__isnull=False).distinct()
     collectors_not_in_garbage_collector = collectors_with_location.exclude(garbagecollector__isnull=False).filter(id=pk).first()
     
     context={'collector':  collectors_not_in_garbage_collector, "page":"unaccepted"}
